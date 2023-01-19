@@ -2,10 +2,12 @@
 using ChatGPT.Models.Requests;
 using ChatGPT.Models.Responses;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ChatGPT
 {
@@ -69,6 +71,18 @@ namespace ChatGPT
             var json = JsonConvert.SerializeObject(obj);
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "images/generations");
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _client.SendAsync(request);
+
+            return await response.Content.ReadFromJsonAsync<ImageGenerationResponse>();
+        }
+
+        public async Task<ImageGenerationResponse> ImageEdits(ImageEditRequest obj)
+        {
+            var json = JsonConvert.SerializeObject(obj);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "images/edit");            
+
+            request.Content = obj.FormData;
 
             var response = await _client.SendAsync(request);
 

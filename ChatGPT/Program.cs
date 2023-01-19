@@ -15,7 +15,11 @@ var chatGPT = new ChatGPT.ChatGPT("sk-vWoZ6Mc4WTThVYM0goUMT3BlbkFJfMTv2edGT7I8NT
 //var obj3 = chatGPT.Edits(new("text-davinci-edit-001", "What day of th wek is it?", "Fix the spelling mistakes")).Result;
 //var obj4 = chatGPT.ImageGeneration(new("A cute baby sea otter", 2)).Result;
 
+var bytes = File.ReadAllBytes("C:\\Users\\Maciej Bielecki\\Downloads\\icon.png");
 
-Console.WriteLine(JsonConvert.SerializeObject(obj4));
+var obj5 = chatGPT.ImageEdits(new("A cute baby sea otter", bytes, bytes, 1)).Result;
+
+
+Console.WriteLine(JsonConvert.SerializeObject(obj5));
 
 
