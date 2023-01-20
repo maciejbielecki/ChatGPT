@@ -2,12 +2,9 @@
 using ChatGPT.Models.Requests;
 using ChatGPT.Models.Responses;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ChatGPT
 {
@@ -44,13 +41,20 @@ namespace ChatGPT
             return await response.Content.ReadFromJsonAsync<GptModel>();
         }
 
-        public async Task<CompletionsResponse> Completions(CompletionsRequest obj)
+        public async Task<CompletionsResponse> Completions(CompletionsRequest obj, string lastRequestId = null)
         {
             var json = JsonConvert.SerializeObject(obj);
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "completions");
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
+            if (!string.IsNullOrEmpty(lastRequestId))
+            {
+                request.Headers.Add("x-request-id", lastRequestId);
+            }
+
             var response = await _client.SendAsync(request);
+
+            //Console.WriteLine(await response.Content.ReadAsStringAsync());
 
             return await response.Content.ReadFromJsonAsync<CompletionsResponse>();
         }
@@ -80,7 +84,7 @@ namespace ChatGPT
         public async Task<ImageGenerationResponse> ImageEdits(ImageEditRequest obj)
         {
             var json = JsonConvert.SerializeObject(obj);
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "images/edit");            
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "images/edit");
 
             request.Content = obj.FormData;
 
