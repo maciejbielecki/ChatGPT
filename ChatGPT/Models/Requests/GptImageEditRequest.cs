@@ -2,14 +2,14 @@
 
 namespace ChatGPT.Models.Requests
 {
-    public class ImageEditRequest
+    public class GptImageEditRequest
     {
-        public ImageEditRequest()
+        public GptImageEditRequest()
         {
 
         }
 
-        public ImageEditRequest(string prompt, byte[] image, byte[] mask, int n = 1, string size = "1024x1024")
+        public GptImageEditRequest(string prompt, byte[] image, byte[] mask, int n = 1, string size = "1024x1024")
         {
             Prompt = prompt;
             N = n;

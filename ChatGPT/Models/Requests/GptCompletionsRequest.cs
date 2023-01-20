@@ -3,14 +3,14 @@ using System.Text.Json.Serialization;
 
 namespace ChatGPT.Models.Requests
 {
-    public class CompletionsRequest
+    public class GptCompletionsRequest
     {
-        public CompletionsRequest()
+        public GptCompletionsRequest()
         {
 
         }
 
-        public CompletionsRequest(string model, string prompt, int temperature, int maxTokens)
+        public GptCompletionsRequest(string model, string prompt, int temperature, int maxTokens)
         {
             Model = model;
             Prompt = prompt;

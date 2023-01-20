@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace ChatGPT.Models.Responses
 {
-    public class ImageGenerationResponse
+    public class GptImageGenerationResponse
     {
         [JsonProperty("created")]
         [JsonPropertyName("created")]

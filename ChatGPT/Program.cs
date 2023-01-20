@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-//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
+﻿using ChatGPT.Models;
 
 Console.WriteLine("ChatGPT");
 
@@ -21,22 +19,16 @@ var chatGPT = new ChatGPT.ChatGPT("sk-vWoZ6Mc4WTThVYM0goUMT3BlbkFJfMTv2edGT7I8NT
 //var obj = chatGPT.Completions(new("text-davinci-003", "Human: Show me 3 most efective programming languages.", 0, 512)).Result;
 //Console.WriteLine(obj.Choices.First().Text);
 
-var conversation = new List<string>()
-{
-};
-
-Console.WriteLine(string.Join('\n', conversation));
-
 while (true)
 {
-    if (conversation.Any())
+    if (chatGPT.Conversations.FirstOrDefault().Any())
     {
-        var obj = chatGPT.Completions(new("text-davinci-003", string.Join('\n', conversation), 0, 512)).Result;
-        var answer = obj.Choices.First().Text.Replace(string.Join('\n', conversation), string.Empty);
-        Console.WriteLine($"{answer}");
-        conversation.Add(answer);
+        var obj = chatGPT.Completions(new("text-davinci-003", string.Join('\n', chatGPT.Conversations.FirstOrDefault().Select(c => c.Text)), 0, 2048)).Result;
+        var answer = obj.Choices.First().Text.Replace(string.Join('\n', chatGPT.Conversations.FirstOrDefault().Select(c => c.Text)), string.Empty).Trim();
+        Console.WriteLine($"{nameof(ChatType.AI)}: {answer}");
+        chatGPT.Conversations.FirstOrDefault().Add(new() { Type = ChatType.AI, Text = answer, Created = DateTime.Now });
     }
 
-    Console.Write("Human: ");
-    conversation.Add(Console.ReadLine());
+    Console.Write($"{nameof(ChatType.Human)}: ");
+    chatGPT.Conversations.FirstOrDefault().Add(new() { Type = ChatType.Human, Text = Console.ReadLine(), Created = DateTime.Now });
 }

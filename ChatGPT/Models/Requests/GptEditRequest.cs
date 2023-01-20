@@ -3,14 +3,14 @@ using System.Text.Json.Serialization;
 
 namespace ChatGPT.Models.Requests
 {
-    public class EditRequest
+    public class GptEditRequest
     {
-        public EditRequest()
+        public GptEditRequest()
         {
 
         }
 
-        public EditRequest(string model, string input, string instruction, int temperature = 0)
+        public GptEditRequest(string model, string input, string instruction, int temperature = 0)
         {
             Model = model;
             Input = input;

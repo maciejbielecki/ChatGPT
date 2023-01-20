@@ -3,14 +3,14 @@ using System.Text.Json.Serialization;
 
 namespace ChatGPT.Models.Requests
 {
-    public class ImageGenerationRequest
+    public class GptImageGenerationRequest
     {
-        public ImageGenerationRequest()
+        public GptImageGenerationRequest()
         {
 
         }
 
-        public ImageGenerationRequest(string prompt, int n = 1, string size = "1024x1024")
+        public GptImageGenerationRequest(string prompt, int n = 1, string size = "1024x1024")
         {
             Prompt = prompt;
             N = n;

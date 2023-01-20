@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace ChatGPT.Models.Responses
 {
-    public class CompletionsResponse
+    public class GptCompletionsResponse
     {
         [JsonProperty("id")]
         [JsonPropertyName("id")]
