@@ -10,6 +10,11 @@ namespace ChatGPT.Models.Requests
 
         }
 
+        public GptCompletionsRequest(string prompt)
+        {
+            Prompt = prompt;
+        }
+
         public GptCompletionsRequest(string model, string prompt, int temperature, int maxTokens)
         {
             Model = model;
@@ -20,7 +25,7 @@ namespace ChatGPT.Models.Requests
 
         [JsonProperty("model")]
         [JsonPropertyName("model")]
-        public string Model { get; set; }
+        public string Model { get; set; } = "text-davinci-003";
         [JsonProperty("prompt")]
         [JsonPropertyName("prompt")]
         public string Prompt { get; set; }
@@ -30,7 +35,7 @@ namespace ChatGPT.Models.Requests
         public int Temperature { get; set; } = 0;
         [JsonProperty("max_tokens")]
         [JsonPropertyName("max_tokens")]
-        public int MaxTokent { get; set; }
+        public int MaxTokent { get; set; } = 128;
 
         [JsonProperty("top_p")]
         public int TopP { get; set; } = 1;

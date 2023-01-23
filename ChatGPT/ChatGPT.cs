@@ -6,23 +6,43 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 
+//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
+
+//var obj1 = chatGPT.GetGtpModels().Result;
+//var obj2 = chatGPT.Completions(new("text-davinci-003", "What is 2 + 2?", 0, 512)).Result;
+//var obj3 = chatGPT.Edits(new("text-davinci-edit-001", "What day of th wek is it?", "Fix the spelling mistakes")).Result;
+//var obj4 = chatGPT.ImageGeneration(new("A cute baby sea otter", 2)).Result;
+
+//var bytes = File.ReadAllBytes("C:\\Users\\Maciej Bielecki\\Downloads\\icon.png");
+//var obj5 = chatGPT.ImageEdits(new("A cute baby sea otter", bytes, bytes, 1)).Result;
+
 namespace ChatGPT
 {
-    public class ChatGPT
+    public interface IChatGPTService
+    {
+        List<List<ChatAnswer>> Conversations { get; set; }
+        void SetApiKey(string apiKey);
+        Task<GtpModelsResponse> GetGtpModels();
+        Task<GptModel> GetGtpModel(string model);
+        Task<GptCompletionsResponse> Completions(GptCompletionsRequest obj, string lastRequestId = null);
+        Task<GptCompletionsResponse> Edits(GptEditRequest obj);
+        Task<GptImageGenerationResponse> ImageGeneration(GptImageGenerationRequest obj);
+    }
+
+    public class ChatGPTService : IChatGPTService
     {
         private readonly HttpClient _client;
         private const string _openApiOrganization = "org-Oy5TPHeuYK5Fm1yentxadKft";
-
+        private string _apiKey = "";
         public List<List<ChatAnswer>> Conversations { get; set; } = new();
 
-        public ChatGPT(string apiKey)
+        public ChatGPTService()
         {
             _client = HttpClientFactory.Create();
             _client.BaseAddress = new Uri("https://api.openai.com/v1/");
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
             _client.DefaultRequestHeaders.Add("Accept", "application/json");
             _client.DefaultRequestHeaders.Add("OpenAI-Organization", _openApiOrganization);
-
+            SetApiKey("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");
             if (!Conversations.Any())
             {
                 Conversations.Add(new List<ChatAnswer>());
@@ -100,6 +120,12 @@ namespace ChatGPT
             Console.WriteLine(await response.Content.ReadAsStringAsync());
 
             return await response.Content.ReadFromJsonAsync<GptImageGenerationResponse>();
+        }
+
+        public void SetApiKey(string apiKey)
+        {
+            _apiKey = apiKey;
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
         }
     }
 }
