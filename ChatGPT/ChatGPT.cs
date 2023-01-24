@@ -20,7 +20,8 @@ namespace ChatGPT
 {
     public interface IChatGPTService
     {
-        List<List<ChatAnswer>> Conversations { get; set; }
+        List<GptModel> Models { get; }
+        List<Conversation> Conversations { get; set; }
         void SetApiKey(string apiKey);
         Task<GtpModelsResponse> GetGtpModels();
         Task<GptModel> GetGtpModel(string model);
@@ -34,7 +35,9 @@ namespace ChatGPT
         private readonly HttpClient _client;
         private const string _openApiOrganization = "org-Oy5TPHeuYK5Fm1yentxadKft";
         private string _apiKey = "";
-        public List<List<ChatAnswer>> Conversations { get; set; } = new();
+        public List<Conversation> Conversations { get; set; } = new();
+
+        public List<GptModel> Models { get; private set; }
 
         public ChatGPTService()
         {
@@ -45,8 +48,10 @@ namespace ChatGPT
             SetApiKey("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");
             if (!Conversations.Any())
             {
-                Conversations.Add(new List<ChatAnswer>());
+                Conversations.Add(new(TextInputType.Text));
+                Conversations.Add(new(TextInputType.Image));
             }
+            Task.Run(async () => { Models = (await GetGtpModels()).Data; });
         }
 
         public async Task<GtpModelsResponse> GetGtpModels()

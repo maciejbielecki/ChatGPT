@@ -7,11 +7,13 @@
         public DateTime Created { get; set; }
         public bool IsHuman => Type == ChatType.Human;
         public bool IsAI => Type == ChatType.AI;
+        public bool IsWaiting => Type == ChatType.Waiting;
     }
 
     public enum ChatType
     {
         Human,
-        AI
+        AI,
+        Waiting
     }
 }
