@@ -116,7 +116,21 @@ namespace ChatGPT
         public async Task<GptImageGenerationResponse> ImageEdits(GptImageEditRequest obj)
         {
             var json = JsonConvert.SerializeObject(obj);
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "images/edit");
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "images/edits");
+
+            request.Content = obj.FormData;
+
+            var response = await _client.SendAsync(request);
+
+            Console.WriteLine(await response.Content.ReadAsStringAsync());
+
+            return await response.Content.ReadFromJsonAsync<GptImageGenerationResponse>();
+        }
+
+        public async Task<GptImageGenerationResponse> ImageVariations(GptImageEditRequest obj)
+        {
+            var json = JsonConvert.SerializeObject(obj);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "images/variations");
 
             request.Content = obj.FormData;
 

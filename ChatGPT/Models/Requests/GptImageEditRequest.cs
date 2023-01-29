@@ -1,4 +1,7 @@
-﻿using System.Net.Http.Formatting;
+﻿using Newtonsoft.Json;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Text.Json.Serialization;
 
 namespace ChatGPT.Models.Requests
 {
@@ -18,27 +21,42 @@ namespace ChatGPT.Models.Requests
             Image = image;
         }
 
+        public GptImageEditRequest(byte[] image, int n = 1)
+        {
+            N = n;
+            Image = image;
+        }
+
         public byte[] Image { get; set; } = new byte[] { };
-        public byte[] Mask { get; set; } = new byte[] { };
-        public string Prompt { get; set; }
+        public byte[]? Mask { get; set; } = null;
+        public string? Prompt { get; set; } = null;
         public int N { get; set; } = 1; //1-10
 
         public string Size { get; set; } = "1024x1024"; //Must be one of 256x256, 512x512, or 1024x1024
 
-
+        public string ResponseFormat { get; set; }// = "b64_json";
 
         public MultipartFormDataContent FormData
         {
             get
             {
-                var formContent = new MultipartFormDataContent();
-                formContent.Add(new StreamContent(new MemoryStream(Image)), "image");
-                formContent.Add(new StreamContent(new MemoryStream(Mask)), "mask");
-                formContent.Add(new StringContent(Prompt), "prompt");
-                //formContent.Add(new ObjectContent<int>(N, new JsonMediaTypeFormatter()), "n");
-                formContent.Add(new StringContent(Size), "size");
-                return formContent;
+                var multipartContent = new MultipartFormDataContent();
+                if (ResponseFormat != null)
+                    multipartContent.Add(new StringContent(ResponseFormat), "response_format");
+                if (Size != null)
+                    multipartContent.Add(new StringContent(Size), "size");
+                if (N != null)
+                    multipartContent.Add(new StringContent(N.ToString()), "n");
+                if (Mask != null)
+                    multipartContent.Add(new ByteArrayContent(Mask), "mask", "mask.png");
+                multipartContent.Add(new ByteArrayContent(Image), "image", "original.png");
+
+                if (Prompt != null)
+                    multipartContent.Add(new StringContent(Prompt), "prompt");
+
+                return multipartContent;
             }
         }
+
     }
 }
