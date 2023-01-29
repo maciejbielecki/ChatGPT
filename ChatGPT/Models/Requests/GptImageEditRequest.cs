@@ -1,9 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Text.Json.Serialization;
-
-namespace ChatGPT.Models.Requests
+﻿namespace ChatGPT.Models.Requests
 {
     public class GptImageEditRequest
     {
