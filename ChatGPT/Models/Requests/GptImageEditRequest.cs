@@ -7,7 +7,7 @@
 
         }
 
-        public GptImageEditRequest(string prompt, byte[] image, byte[] mask, int n = 1, string size = "1024x1024")
+        public GptImageEditRequest(string prompt, byte[] image, byte[]? mask = null, int n = 1, string size = "1024x1024")
         {
             Prompt = prompt;
             N = n;
@@ -29,7 +29,7 @@
 
         public string Size { get; set; } = "1024x1024"; //Must be one of 256x256, 512x512, or 1024x1024
 
-        public string ResponseFormat { get; set; }// = "b64_json";
+        public string ResponseFormat { get; set; }
 
         public MultipartFormDataContent FormData
         {

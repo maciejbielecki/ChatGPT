@@ -2,6 +2,7 @@
 using ChatGPT.Models.Requests;
 using ChatGPT.Models.Responses;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -28,11 +29,12 @@ namespace ChatGPT
         Task<GptCompletionsResponse> Completions(GptCompletionsRequest obj, string lastRequestId = null);
         Task<GptCompletionsResponse> Edits(GptEditRequest obj);
         Task<GptImageGenerationResponse> ImageGeneration(GptImageGenerationRequest obj);
+        Task<GptImageGenerationResponse> ImageEdits(GptImageEditRequest obj);
+        Task<GptImageGenerationResponse> ImageVariations(GptImageEditRequest obj);
     }
 
     public class ChatGPTService : IChatGPTService
     {
-        private readonly HttpClient _client;
         private const string _openApiOrganization = "org-Oy5TPHeuYK5Fm1yentxadKft";
         private string _apiKey = "";
         public List<Conversation> Conversations { get; set; } = new();
@@ -41,10 +43,7 @@ namespace ChatGPT
 
         public ChatGPTService()
         {
-            _client = HttpClientFactory.Create();
-            _client.BaseAddress = new Uri("https://api.openai.com/v1/");
-            _client.DefaultRequestHeaders.Add("Accept", "application/json");
-            _client.DefaultRequestHeaders.Add("OpenAI-Organization", _openApiOrganization);
+           
             SetApiKey("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");
             if (!Conversations.Any())
             {
@@ -58,7 +57,7 @@ namespace ChatGPT
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "models");
 
-            var response = await _client.SendAsync(request);
+            var response = await SendRequestAsync(request);
 
             return await response.Content.ReadFromJsonAsync<GtpModelsResponse>();
         }
@@ -68,7 +67,7 @@ namespace ChatGPT
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"models/{model}");
             request.Headers.Add("OpenAI-Organization", _openApiOrganization);
 
-            var response = await _client.SendAsync(request);
+            var response = await SendRequestAsync(request);
 
             return await response.Content.ReadFromJsonAsync<GptModel>();
         }
@@ -84,7 +83,7 @@ namespace ChatGPT
                 request.Headers.Add("x-request-id", lastRequestId);
             }
 
-            var response = await _client.SendAsync(request);
+            var response = await SendRequestAsync(request);
 
             //Console.WriteLine(await response.Content.ReadAsStringAsync());
 
@@ -97,7 +96,7 @@ namespace ChatGPT
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "edits");
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _client.SendAsync(request);
+            var response = await SendRequestAsync(request);
 
             return await response.Content.ReadFromJsonAsync<GptCompletionsResponse>();
         }
@@ -108,7 +107,9 @@ namespace ChatGPT
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "images/generations");
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _client.SendAsync(request);
+            var response = await SendRequestAsync(request);
+
+            //var returnedJson = await response.Content.ReadAsStringAsync();
 
             return await response.Content.ReadFromJsonAsync<GptImageGenerationResponse>();
         }
@@ -120,9 +121,9 @@ namespace ChatGPT
 
             request.Content = obj.FormData;
 
-            var response = await _client.SendAsync(request);
+            var response = await SendRequestAsync(request);
 
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
+            //var returnedJson = await response.Content.ReadAsStringAsync();
 
             return await response.Content.ReadFromJsonAsync<GptImageGenerationResponse>();
         }
@@ -134,9 +135,9 @@ namespace ChatGPT
 
             request.Content = obj.FormData;
 
-            var response = await _client.SendAsync(request);
+            var response = await SendRequestAsync(request);
 
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
+            //var returnedJson = await response.Content.ReadAsStringAsync();
 
             return await response.Content.ReadFromJsonAsync<GptImageGenerationResponse>();
         }
@@ -144,7 +145,23 @@ namespace ChatGPT
         public void SetApiKey(string apiKey)
         {
             _apiKey = apiKey;
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+        }
+
+        public Task<HttpResponseMessage> SendRequestAsync(HttpRequestMessage requestMessage)
+        {
+            try
+            {
+                HttpClient client = HttpClientFactory.Create();
+                client.BaseAddress = new Uri("https://api.openai.com/v1/");
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Add("OpenAI-Organization", _openApiOrganization);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
+                return client.SendAsync(requestMessage);
+            }
+            catch(Exception ex)
+            {
+                return default;
+            }            
         }
     }
 }
