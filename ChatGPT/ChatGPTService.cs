@@ -43,7 +43,7 @@ namespace ChatGPT
 
         public ChatGPTService()
         {
-           
+
             SetApiKey("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");
             if (!Conversations.Any())
             {
@@ -109,7 +109,7 @@ namespace ChatGPT
 
             var response = await SendRequestAsync(request);
 
-            //var returnedJson = await response.Content.ReadAsStringAsync();
+            var returnedJson = await response.Content.ReadAsStringAsync();
 
             return await response.Content.ReadFromJsonAsync<GptImageGenerationResponse>();
         }
@@ -158,10 +158,10 @@ namespace ChatGPT
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
                 return client.SendAsync(requestMessage);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return default;
-            }            
+            }
         }
     }
 }

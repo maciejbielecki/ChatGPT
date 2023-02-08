@@ -28,5 +28,10 @@ namespace ChatGPT.Models.Requests
         [JsonProperty("size")]
         [JsonPropertyName("size")]
         public string Size { get; set; } = "1024x1024"; //Must be one of 256x256, 512x512, or 1024x1024
+
+
+        [JsonProperty("response_format")]
+        [JsonPropertyName("response_format")]
+        public string ResponseFormat { get; set; } = "url"; //= "b64_json";
     }
 }

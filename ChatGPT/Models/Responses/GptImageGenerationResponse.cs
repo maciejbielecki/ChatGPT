@@ -18,5 +18,9 @@ namespace ChatGPT.Models.Responses
         [JsonProperty("url")]
         [JsonPropertyName("url")]
         public string Url { get; set; }
+
+        [JsonProperty("b64_json")]
+        [JsonPropertyName("b64_json")]
+        public string Base64 { get; set; }
     }
 }
