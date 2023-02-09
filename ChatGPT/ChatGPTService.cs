@@ -109,7 +109,7 @@ namespace ChatGPT
 
             var response = await SendRequestAsync(request);
 
-            var returnedJson = await response.Content.ReadAsStringAsync();
+            //var returnedJson = await response.Content.ReadAsStringAsync();
 
             return await response.Content.ReadFromJsonAsync<GptImageGenerationResponse>();
         }
