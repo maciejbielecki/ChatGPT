@@ -32,6 +32,6 @@ namespace ChatGPT.Models.Requests
 
         [JsonProperty("response_format")]
         [JsonPropertyName("response_format")]
-        public string ResponseFormat { get; set; } = "url"; //= "b64_json";
+        public string ResponseFormat { get; set; } = "b64_json"; //= "url";
     }
 }
